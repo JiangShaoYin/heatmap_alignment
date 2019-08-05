@@ -102,7 +102,7 @@ def train(config, train_loader, model, criterion, optimizer, epoch,
 
         # output = (output + output_flipped) * 0.5
 
-        batch_error_mean = normalisedError(landmark,output)
+        # batch_error_mean = normalisedError(landmark,output)
 
 
         acc.update(avg_acc, cnt)

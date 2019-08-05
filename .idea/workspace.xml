@@ -12,20 +12,20 @@
     <session id="-1017401415">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="7" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.172" value="1" />
           <entry key="project.open.time.181" value="1" />
           <entry key="project.open.time.2" value="3" />
-          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.3" value="2" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="8" />
+          <entry key="project.opened" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="log" value="3" />
-          <entry key="py" value="115" />
+          <entry key="py" value="116" />
           <entry key="txt" value="2" />
           <entry key="yaml" value="15" />
         </counts>
@@ -33,13 +33,13 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="PLAIN_TEXT" value="5" />
-          <entry key="Python" value="115" />
+          <entry key="Python" value="116" />
           <entry key="YAML" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="3433" />
+          <entry key="py" value="3547" />
           <entry key="txt" value="1" />
           <entry key="yaml" value="9" />
         </counts>
@@ -47,7 +47,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="1" />
-          <entry key="Python" value="3433" />
+          <entry key="Python" value="3547" />
           <entry key="YAML" value="9" />
         </counts>
       </usages-collector>
@@ -58,8 +58,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pose_estimation/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-273">
-              <caret line="145" column="5" lean-forward="true" selection-start-line="145" selection-start-column="5" selection-end-line="145" selection-end-column="5" />
+            <state relative-caret-position="184">
+              <caret line="144" column="23" selection-start-line="144" selection-start-column="23" selection-end-line="144" selection-end-column="23" />
               <folding>
                 <element signature="e#223#261#0" expanded="true" />
               </folding>
@@ -68,13 +68,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/dataset/JointsDataset.py">
+        <entry file="file://$PROJECT_DIR$/lib/core/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="196" column="55" lean-forward="true" selection-start-line="196" selection-start-column="55" selection-end-line="196" selection-end-column="55" />
-              <folding>
-                <element signature="e#270#308#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="356">
+              <caret line="74" column="19" selection-start-line="74" selection-start-column="4" selection-end-line="74" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -82,7 +79,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://D:/ProgramData/Anaconda3/envs/pytorch/Lib/site-packages/torchvision/transforms/transforms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
+            <state relative-caret-position="741">
               <caret line="43" column="27" selection-start-line="43" selection-start-column="27" selection-end-line="43" selection-end-column="27" />
             </state>
           </provider>
@@ -100,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/dataset/mpii.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="114" column="28" lean-forward="true" selection-start-line="114" selection-start-column="28" selection-end-line="114" selection-end-column="28" />
+            <state relative-caret-position="1539">
+              <caret line="93" column="54" selection-start-line="93" selection-start-column="54" selection-end-line="93" selection-end-column="54" />
               <folding>
                 <element signature="e#270#308#0" expanded="true" />
               </folding>
@@ -112,8 +109,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/core/function.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="740">
-              <caret line="69" selection-start-line="69" selection-end-line="69" />
+            <state relative-caret-position="491">
+              <caret line="105" selection-start-line="105" selection-end-line="105" />
               <folding>
                 <element signature="e#270#308#0" expanded="true" />
               </folding>
@@ -124,7 +121,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://D:/ProgramData/Anaconda3/envs/pytorch/Lib/site-packages/torch/nn/modules/module.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
+            <state relative-caret-position="8607">
               <caret line="476" column="86" selection-start-line="476" selection-start-column="86" selection-end-line="476" selection-end-column="86" />
               <folding>
                 <element signature="e#7292#7880#0" />
@@ -134,10 +131,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/dataset/pose_resnet.py">
+        <entry file="file://$PROJECT_DIR$/lib/models/pose_resnet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="244" column="48" selection-start-line="244" selection-start-column="48" selection-end-line="244" selection-end-column="48" />
+            <state relative-caret-position="2413">
+              <caret line="236" selection-start-line="236" selection-end-line="236" />
               <folding>
                 <element signature="e#270#308#0" expanded="true" />
                 <element signature="e#586#738#0" />
@@ -149,11 +146,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pose_estimation/valid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-390">
-              <caret line="88" column="28" lean-forward="true" selection-start-line="88" selection-start-column="28" selection-end-line="88" selection-end-column="28" />
+            <state relative-caret-position="345">
+              <caret line="128" column="78" selection-start-line="128" selection-start-column="78" selection-end-line="128" selection-end-column="78" />
               <folding>
                 <element signature="e#305#343#0" expanded="true" />
               </folding>
@@ -161,14 +158,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/models/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="190">
-              <caret line="10" column="25" lean-forward="true" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
-              <folding>
-                <element signature="e#270#308#0" expanded="true" />
-              </folding>
+              <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -208,16 +202,19 @@
       <find>val_dataset</find>
       <find>validate(</find>
       <find>FLIP_TEST</find>
-      <find>TEST.FLIP_TEST:</find>
       <find>warp</find>
-      <find>transform</find>
-      <find>loss</find>
       <find>config</find>
       <find>models</find>
+      <find>transform</find>
+      <find>TEST.FLIP_TEST:</find>
+      <find>loss</find>
     </findStrings>
     <replaceStrings>
       <replace>../data</replace>
     </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -232,10 +229,11 @@
         <option value="$PROJECT_DIR$/lib/models/pose_resnet.py" />
         <option value="$PROJECT_DIR$/lib/dataset/mpii.py" />
         <option value="$PROJECT_DIR$/lib/core/evaluate.py" />
-        <option value="$PROJECT_DIR$/pose_estimation/valid.py" />
-        <option value="$PROJECT_DIR$/lib/core/function.py" />
         <option value="$PROJECT_DIR$/pose_estimation/train.py" />
         <option value="$PROJECT_DIR$/lib/dataset/JointsDataset.py" />
+        <option value="$PROJECT_DIR$/pose_estimation/valid.py" />
+        <option value="$PROJECT_DIR$/lib/models/__init__.py" />
+        <option value="$PROJECT_DIR$/lib/core/function.py" />
       </list>
     </option>
   </component>
@@ -245,6 +243,7 @@
     <option name="width" value="1364" />
     <option name="height" value="726" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -267,6 +266,12 @@
               <item name="heatmap" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="dataset" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="heatmap" type="b2602c69:ProjectViewProjectNode" />
+              <item name="heatmap" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="heatmap" type="b2602c69:ProjectViewProjectNode" />
@@ -440,19 +445,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10906217" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.23535791" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.32321042" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.48606467" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3322185" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.23861171" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.329718" />
@@ -468,7 +472,7 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lib/dataset/pose_resnet.py</url>
+          <url>file://$PROJECT_DIR$/lib/models/pose_resnet.py</url>
           <line>121</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
@@ -498,7 +502,7 @@
           <option name="timeStamp" value="131" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lib/dataset/pose_resnet.py</url>
+          <url>file://$PROJECT_DIR$/lib/models/pose_resnet.py</url>
           <line>236</line>
           <option name="timeStamp" value="132" />
         </line-breakpoint>
@@ -516,16 +520,6 @@
           <url>file://$PROJECT_DIR$/lib/dataset/JointsDataset.py</url>
           <line>193</line>
           <option name="timeStamp" value="135" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/pose_estimation/valid.py</url>
-          <line>175</line>
-          <option name="timeStamp" value="136" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/pose_estimation/valid.py</url>
-          <line>121</line>
-          <option name="timeStamp" value="137" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -814,14 +808,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="496">
           <caret line="188" column="55" lean-forward="true" selection-start-line="188" selection-start-column="55" selection-end-line="188" selection-end-column="55" />
-          <folding>
-            <element signature="e#698#909#0" />
-            <element signature="e#3780#4394#0" />
-            <element signature="e#4413#4672#0" />
-            <element signature="e#4707#6528#0" />
-            <element signature="e#6564#6966#0" />
-            <element signature="e#7169#7976#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -846,48 +832,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/core/evaluate.py">
+    <entry file="file://$PROJECT_DIR$/lib/dataset/JointsDataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="74" column="25" selection-start-line="74" selection-start-column="20" selection-end-line="74" selection-end-column="31" />
-          <folding>
-            <element signature="e#1272#1543#0" />
-            <marker date="1564992102037" expanded="true" signature="2901:3368" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/ProgramData/Anaconda3/envs/pytorch/Lib/site-packages/torch/nn/modules/module.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="476" column="86" selection-start-line="476" selection-start-column="86" selection-end-line="476" selection-end-column="86" />
-          <folding>
-            <element signature="e#7292#7880#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/dataset/pose_resnet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="244" column="48" selection-start-line="244" selection-start-column="48" selection-end-line="244" selection-end-column="48" />
-          <folding>
-            <element signature="e#270#308#0" expanded="true" />
-            <element signature="e#586#738#0" />
-            <element signature="e#774#1586#0" />
-            <element signature="e#1622#2866#0" />
-            <element signature="e#2908#4200#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/core/function.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="740">
-          <caret line="69" selection-start-line="69" selection-end-line="69" />
+        <state relative-caret-position="3002">
+          <caret line="175" column="20" selection-start-line="175" selection-start-column="20" selection-end-line="175" selection-end-column="20" />
           <folding>
             <element signature="e#270#308#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/ProgramData/Anaconda3/envs/pytorch/Lib/site-packages/torchvision/transforms/transforms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="741">
+          <caret line="43" column="27" selection-start-line="43" selection-start-column="27" selection-end-line="43" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -898,49 +856,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/ProgramData/Anaconda3/envs/pytorch/Lib/site-packages/torchvision/transforms/transforms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="43" column="27" selection-start-line="43" selection-start-column="27" selection-end-line="43" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/dataset/mpii.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="114" column="28" lean-forward="true" selection-start-line="114" selection-start-column="28" selection-end-line="114" selection-end-column="28" />
+        <state relative-caret-position="1539">
+          <caret line="93" column="54" selection-start-line="93" selection-start-column="54" selection-end-line="93" selection-end-column="54" />
           <folding>
             <element signature="e#270#308#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/dataset/JointsDataset.py">
+    <entry file="file://D:/ProgramData/Anaconda3/envs/pytorch/Lib/site-packages/torch/nn/modules/module.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="196" column="55" lean-forward="true" selection-start-line="196" selection-start-column="55" selection-end-line="196" selection-end-column="55" />
+        <state relative-caret-position="8607">
+          <caret line="476" column="86" selection-start-line="476" selection-start-column="86" selection-end-line="476" selection-end-column="86" />
+          <folding>
+            <element signature="e#7292#7880#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/models/pose_resnet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2413">
+          <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
             <element signature="e#270#308#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pose_estimation/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-273">
-          <caret line="145" column="5" lean-forward="true" selection-start-line="145" selection-start-column="5" selection-end-line="145" selection-end-column="5" />
-          <folding>
-            <element signature="e#223#261#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pose_estimation/valid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-390">
-          <caret line="88" column="28" lean-forward="true" selection-start-line="88" selection-start-column="28" selection-end-line="88" selection-end-column="28" />
-          <folding>
-            <element signature="e#305#343#0" expanded="true" />
+            <element signature="e#586#738#0" />
+            <element signature="e#774#1586#0" />
+            <element signature="e#1622#2866#0" />
+            <element signature="e#2908#4200#0" />
           </folding>
         </state>
       </provider>
@@ -948,9 +893,43 @@
     <entry file="file://$PROJECT_DIR$/lib/models/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
-          <caret line="10" column="25" lean-forward="true" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
+          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pose_estimation/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="144" column="23" selection-start-line="144" selection-start-column="23" selection-end-line="144" selection-end-column="23" />
+          <folding>
+            <element signature="e#223#261#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/core/evaluate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="356">
+          <caret line="74" column="19" selection-start-line="74" selection-start-column="4" selection-end-line="74" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/core/function.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="491">
+          <caret line="105" selection-start-line="105" selection-end-line="105" />
           <folding>
             <element signature="e#270#308#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pose_estimation/valid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="128" column="78" selection-start-line="128" selection-start-column="78" selection-end-line="128" selection-end-column="78" />
+          <folding>
+            <element signature="e#305#343#0" expanded="true" />
           </folding>
         </state>
       </provider>
