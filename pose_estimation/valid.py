@@ -153,17 +153,18 @@ def main():
                                      std=[0.229, 0.224, 0.225])
 
 
-    valid_dataset = eval('dataset.'+config.DATASET.DATASET)(  # eval(xx.py)返回xx.py里面的类的对象，根据config配置dataloader读取数据集
+    valid_dataset = eval('dataset.' + config.DATASET.DATASET)(  # eval(xx.py)返回xx.py里面的类的对象，根据config配置dataloader读取数据集
         config,
         config.DATASET.ROOT, # root ==  '/home/jiangshaoyin/heatmap-landmark/data/'
         config.DATASET.TEST_SET,
-        False,
+        is_train = False,
         train_set = False,
-        transform = transforms.Compose([
+        transform = transforms.Compose([  # transform的集合是，1.转到tensor
             transforms.ToTensor(),
-            normalize,
+            # normalize,            # 2.正则化，Normalize：Normalized an tensor image with mean and standard deviation
         ])
     )
+
     valid_loader = torch.utils.data.DataLoader(  #
         valid_dataset,
         batch_size=config.TEST.BATCH_SIZE*len(gpus),

@@ -135,7 +135,9 @@ class JointsDataset(Dataset):
         filename = db_rec['filename'] if 'filename' in db_rec else ''
         imgnum = db_rec['imgnum'] if 'imgnum' in db_rec else ''
 
-        data_numpy = cv2.imread(image_file, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
+        data_numpy = cv2.imread(image_file, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)  # 原始图片的尺寸
+        cv2.imwrite("data_numpy.jpg", data_numpy)
+        img_raw = copy.deepcopy(data_numpy)
 
         if data_numpy is None:
             logger.error('=> fail to read {}'.format(image_file))
@@ -143,28 +145,27 @@ class JointsDataset(Dataset):
 
         joints = db_rec['joints']
         joints_raw = copy.deepcopy(db_rec['joints'])
-        joints_raw[:, 0] = joints_raw[:,0] * 250 / data_numpy.shape[1]  #
+        joints_raw[:, 0] = joints_raw[:,0] * 250 / data_numpy.shape[1]  # 按照250的尺寸，缩放原始img的label
         joints_raw[:, 1] = joints_raw[:, 1] * 250 / data_numpy.shape[0]
         joints_vis = db_rec['joints_vis']
 
         data_numpy = cv2.resize(data_numpy,(250, 250))
         #c = np.array([125.0, 125.0]) #db_rec['center']
+
         # drift
-        c = np.array([125.0+random.uniform(-30.0, 30.0), 
-                      125.0+random.uniform(-30.0, 30.0)])  # db_rec['center'], 中心点，偏移后的量
+        c = np.array([125.0 + random.uniform(-30.0, 30.0),
+                      125.0 + random.uniform(-30.0, 30.0)])  # db_rec['center'], 中心点，偏移后的量
 
         s = 1.0  # db_rec['scale']
         score = db_rec['score'] if 'score' in db_rec else 1
         r = 0
 
-
-        if self.is_train:
+        if self.is_train:  # 训练时，做缩放和旋转，测试时不做
             sf = self.scale_factor # 缩放因子
             rf = self.rotation_factor # 旋转因子
             #s = s * np.clip(np.random.randn()*sf + 1, 1 - sf, 1 + sf)
             s = s * np.clip(np.random.randn()*sf + 1, 0.7, 1.2)
-            r = np.clip(np.random.randn()*rf, -rf*2, rf*2) \
-                if random.random() <= 0.6 else 0
+            r = np.clip(np.random.randn()*rf, -rf*2, rf*2) if random.random() <= 0.6 else 0
 
             if self.flip and random.random() <= 0.5:
                 data_numpy = data_numpy[:, ::-1, :]
@@ -172,37 +173,42 @@ class JointsDataset(Dataset):
                     joints, joints_vis, data_numpy.shape[1], self.flip_pairs)
                 c[0] = data_numpy.shape[1] - c[0] - 1
 
-        trans = get_affine_transform(c, s, r, self.image_size) # 做缩放，平移和翻转
+        trans = get_affine_transform(c, s, r, self.image_size) # img做缩放，平移和翻转，将图片扩充为256, trans比例为rand（以240为例）-256
+
+        cv2.imwrite("before_trans.jpg",data_numpy)
+
         input = cv2.warpAffine(
             data_numpy,
             trans,
             (int(self.image_size[0]), int(self.image_size[1])),
             flags=cv2.INTER_LINEAR)
-        # cv2.imwrite("0.jpg", input)  # 输出放射变化图片
 
-        input = augmentation(input)
-        # cv2.imwrite("1.jpg", input)  # 输出放射变化图片
+        img_256 = copy.deepcopy(input)
 
-        if self.transform:
-            input = self.transform(input)  # 对input
-            # cv2.imwrite("2.jpg", input)  # 输出放射变化图片
+        cv2.imwrite("after_trans.jpg", input)
 
         for i in range(self.num_joints):
             if joints_vis[i, 0] > 0.0:
-                joints[i, 0:2] = affine_transform(joints[i, 0:2], trans) # 对label做放射变换
+                joints[i, 0:2] = affine_transform(joints[i, 0:2], trans)  # 对label做放射变换到256
 
-        target, target_weight = self.generate_target(joints, joints_vis)
 
+        input = augmentation(input)  # 图像加噪音
+
+        if self.transform:
+            input = self.transform(input)  # 对input做transform，为tensor（除以255），再做BN
+
+        target, target_weight = self.generate_target(joints, joints_vis) # 对进行仿射变换后的label，生成heatmap
         target = torch.from_numpy(target)
         target_weight = torch.from_numpy(target_weight)
 
-
         meta = {
-            'image': image_file,
+            'image': image_file,  # 文件的名字
+            'img_raw':img_raw,    # img的pixel数组
+            'img_256':img_256,
             'filename': filename,
             'imgnum': imgnum,
             'joints': joints,
-            'joints_raw':joints_raw,
+            'joints_raw':joints_raw,  # txt中的label信息
             'joints_vis': joints_vis,
             'center': c,
             'scale': s,
@@ -210,7 +216,7 @@ class JointsDataset(Dataset):
             'score': score
         }
         # return input, target, target_weight  # targer_weight用于控制特征点显示不显示
-        return input, target, target_weight, image_file, joints_raw, meta
+        return input, target, target_weight, meta
 
     def select_data(self, db):
         db_selected = []

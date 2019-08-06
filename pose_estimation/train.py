@@ -115,6 +115,9 @@ def main():
     gpus = [int(i) for i in config.GPUS.split(',')]
     model = torch.nn.DataParallel(model, device_ids=gpus).cuda()  # 调用多GPU
 
+    # if torch.cuda.device_count() > 1:
+    #     model = torch.nn.DataParallel(model, device_ids=[0,1])
+
     # define loss function (criterion) and optimizer
     criterion = JointsMSELoss(
         use_target_weight=config.LOSS.USE_TARGET_WEIGHT
@@ -135,11 +138,12 @@ def main():
         config.DATASET.TRAIN_SET,
         True,
         train_set = True,
-        transform = transforms.Compose([transforms.ToTensor(), ]))# 数据增强？
+        transform = transforms.Compose([transforms.ToTensor(), normalize, ]))# 数据增强？
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=config.TRAIN.BATCH_SIZE * len(gpus),  # 用1个GPU, batchsize为32
+        # batch_size=config.TRAIN.BATCH_SIZE * 2,  # 用1个GPU, batchsize为32
         shuffle=config.TRAIN.SHUFFLE,
         num_workers=config.WORKERS,
         pin_memory=True

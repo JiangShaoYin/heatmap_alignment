@@ -19,10 +19,10 @@ def flip_back(output_flipped, matched_parts):
     assert output_flipped.ndim == 4,\
         'output_flipped should be [batch_size, num_joints, height, width]'
 
-    output_flipped = output_flipped[:, :, :, ::-1]
+    output_flipped = output_flipped[:, :, :, ::-1]  # 32 * 5 * 64 *64， 将输出图翻转回来
 
     for pair in matched_parts:
-        tmp = output_flipped[:, pair[0], :, :].copy()
+        tmp = output_flipped[:, pair[0], :, :].copy()  # 将1,2和3,4上的对应元素互换
         output_flipped[:, pair[0], :, :] = output_flipped[:, pair[1], :, :]
         output_flipped[:, pair[1], :, :] = tmp
 
@@ -46,7 +46,7 @@ def fliplr_joints(joints, joints_vis, width, matched_parts):
     return joints*joints_vis, joints_vis
 
 
-def transform_preds(coords, center, scale, output_size):
+def transform_preds(coords, center, scale, output_size):  #
     target_coords = np.zeros(coords.shape)
     trans = get_affine_transform(center, scale, 0, output_size, inv=1)
     for p in range(coords.shape[0]):
@@ -64,26 +64,29 @@ def get_affine_transform(center,
         #print(scale)
         scale = np.array([scale, scale])
     
-    scale_tmp = scale * 200.0
-    src_w = scale_tmp[0]
-    dst_w = output_size[0]
+    scale_tmp = scale * 200.0  #
+    src_w = scale_tmp[0]  # 200
+
+    dst_w = output_size[0] # 256
     dst_h = output_size[1]
 
     rot_rad = np.pi * rot / 180
-    src_dir = get_dir([0, src_w * -0.5], rot_rad)
-    dst_dir = np.array([0, dst_w * -0.5], np.float32)
+    src_dir = get_dir([0, src_w * -0.5], rot_rad)  # 将src的x，y坐标，旋转rot_rad后返回出去， src_dir = [0, -120]
+    dst_dir = np.array([0, dst_w * -0.5], np.float32)  # dst_dir = [0, -128]
 
     src = np.zeros((3, 2), dtype=np.float32)
     dst = np.zeros((3, 2), dtype=np.float32)
-    src[0, :] = center + scale_tmp * shift
-    src[1, :] = center + src_dir + scale_tmp * shift
+
+    src[0, :] = center + scale_tmp * shift              # 中心点坐标
     dst[0, :] = [dst_w * 0.5, dst_h * 0.5]
+
+    src[1, :] = center + src_dir + scale_tmp * shift    # 顶边中点
     dst[1, :] = np.array([dst_w * 0.5, dst_h * 0.5]) + dst_dir
 
-    src[2:, :] = get_3rd_point(src[0, :], src[1, :])
+    src[2:, :] = get_3rd_point(src[0, :], src[1, :])  # 第3个点是将pt1_x-delta_y, pt1_y-delta_x得到的新坐标
     dst[2:, :] = get_3rd_point(dst[0, :], dst[1, :])
 
-    if inv:
+    if inv:  # 反过来了
         trans = cv2.getAffineTransform(np.float32(dst), np.float32(src))
     else:
         trans = cv2.getAffineTransform(np.float32(src), np.float32(dst))
@@ -102,7 +105,7 @@ def get_3rd_point(a, b):
     return b + np.array([-direct[1], direct[0]], dtype=np.float32)
 
 
-def get_dir(src_point, rot_rad):
+def get_dir(src_point, rot_rad): # 将src的x，y坐标，旋转rot_rad后返回出去
     sn, cs = np.sin(rot_rad), np.cos(rot_rad)
 
     src_result = [0, 0]

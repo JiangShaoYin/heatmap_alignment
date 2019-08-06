@@ -12,6 +12,9 @@ import logging
 import time
 import os
 
+import pylab
+from matplotlib.patches import Circle
+
 import numpy as np
 import torch
 
@@ -61,7 +64,7 @@ def train(config, train_loader, model, criterion, optimizer, epoch,
     model.train()
 
     end = time.time()
-    for i, (input, target, target_weight, img_path, landmark, meta) in enumerate(train_loader): # target是label里面的landmark的heatmap，每个点一张，该点为1，其他点为0
+    for i, (input, target, target_weight, meta) in enumerate(train_loader): # target是label里面的landmark的heatmap，每个点一张，该点为1，其他点为0
         # measure data loading time
         data_time.update(time.time() - end)
 
@@ -122,7 +125,7 @@ def train(config, train_loader, model, criterion, optimizer, epoch,
                       speed=input.size(0)/batch_time.val,
                       data_time=data_time, loss=losses, acc=acc)
             logger.info(msg)
-            print("batch_error_mean:{}".format(batch_error_mean))
+            # print("batch_error_mean:{}".format(batch_error_mean))
 
             # writer = writer_dict['writer']
             # global_steps = writer_dict['train_global_steps']
@@ -141,6 +144,8 @@ def train(config, train_loader, model, criterion, optimizer, epoch,
 
 def validate(config, val_loader, val_dataset, model, criterion, output_dir,
              tb_log_dir, writer_dict=None):
+
+
     batch_time = AverageMeter()
     losses = AverageMeter()
     acc = AverageMeter()
@@ -159,13 +164,13 @@ def validate(config, val_loader, val_dataset, model, criterion, output_dir,
     total_error = 0
     with torch.no_grad():
         end = time.time()
-        for i, (input, target, target_weight, img_path, landmark, meta) in enumerate(val_loader):                 # compute output
+        for i, (input, target, target_weight, meta) in enumerate(val_loader):                 # compute output
             output = model(input)
             batch_error_mean = 0
             if config.TEST.FLIP_TEST:
                 # this part is ugly, because pytorch has not supported negative index
                 # input_flipped = model(input[:, :, :, ::-1])
-                input_flipped = np.flip(input.cpu().numpy(), 3).copy()
+                input_flipped = np.flip(input.cpu().numpy(), 3).copy()  # 计算翻转图像的预测结果
                 input_flipped = torch.from_numpy(input_flipped).cuda()
                 output_flipped = model(input_flipped)
                 output_flipped = flip_back(output_flipped.cpu().numpy(),
@@ -174,8 +179,7 @@ def validate(config, val_loader, val_dataset, model, criterion, output_dir,
 
                 # feature is not aligned, shift flipped heatmap for higher accuracy
                 if config.TEST.SHIFT_HEATMAP:
-                    output_flipped[:, :, :, 1:] = \
-                        output_flipped.clone()[:, :, :, 0:-1]
+                    output_flipped[:, :, :, 1:] = output_flipped.clone()[:, :, :, 0:-1]  # 将结果向右偏移1个单位
                     # output_flipped[:, :, :, 0] = 0
 
                 output = (output + output_flipped) * 0.5
@@ -197,15 +201,20 @@ def validate(config, val_loader, val_dataset, model, criterion, output_dir,
             batch_time.update(time.time() - end)
             end = time.time()
 
-            c = meta['center'].numpy()
+            c = meta['center'].numpy()  # 因为图像从Dataset里面出来的时候，加了个随机偏移，所以在测试的时候，要把图像偏回去
             s = meta['scale'].numpy()
             score = meta['score'].numpy()
+            preds, maxvals = get_final_preds(config, output.clone().cpu().numpy(), c, s)  # 变回到250那个尺度上
 
+            preds[:,:,1] =preds[:,:,1] /200 * meta["img_raw"].shape[2]
+            preds[:, :, 0] = preds[:, :, 0] / 200 * meta["img_raw"].shape[1]
 
-
-            preds, maxvals = get_final_preds(config, output.clone().cpu().numpy(), c, s)
 
             gt_landmark = meta['joints_raw'].numpy()
+            imgs = meta["img_256"]
+            for img_idx in range(imgs.shape[0]):
+                vis_face(imgs[img_idx], meta['joints'][img_idx], str(img_idx) + ".jpg")
+
             # np.savez("pred_gt_landmark.npz", preds, gt_landmark)
             # print(preds)
             # print(gt_landmark)
@@ -302,7 +311,17 @@ def _print_name_value(name_value, full_arch_name):
         ' '.join(['| {:.3f}'.format(value) for value in values]) +
          ' |'
     )
+def vis_face(im_array, landmark, save_name):
+    pylab.imshow(im_array)  # im_array是输入图片
 
+    if landmark is not None:
+
+        for j in range(5):                                # 遍历5个特征点的坐标
+            cir1 = Circle(xy=(landmark[j, 0], landmark[j, 1]), radius=2, alpha=0.4, color="red")
+            pylab.gca().add_patch(cir1)
+
+        pylab.savefig(save_name)
+        pylab.show()
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""

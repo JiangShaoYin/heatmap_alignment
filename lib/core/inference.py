@@ -54,10 +54,10 @@ def get_final_preds(config, batch_heatmaps, center, scale):
 
     # post-processing
     if config.TEST.POST_PROCESS:
-        for n in range(coords.shape[0]):
+        for n in range(coords.shape[0]):  # 32 * 5 * 2
             for p in range(coords.shape[1]):
-                hm = batch_heatmaps[n][p]
-                px = int(math.floor(coords[n][p][0] + 0.5))
+                hm = batch_heatmaps[n][p] # 第n张图上的，第p个特征点
+                px = int(math.floor(coords[n][p][0] + 0.5))  #  + 0.5是为了四舍五入
                 py = int(math.floor(coords[n][p][1] + 0.5))
                 if 1 < px < heatmap_width-1 and 1 < py < heatmap_height-1:
                     diff = np.array([hm[py][px+1] - hm[py][px-1],
@@ -67,7 +67,7 @@ def get_final_preds(config, batch_heatmaps, center, scale):
     preds = coords.copy()
 
     # Transform back
-    for i in range(coords.shape[0]):
+    for i in range(coords.shape[0]):  # 32个图
         preds[i] = transform_preds(coords[i], center[i], scale[i],
                                    [heatmap_width, heatmap_height])
 

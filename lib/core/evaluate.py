@@ -55,7 +55,7 @@ def accuracy(output, target, hm_type='gaussian', thr=0.5):
         h = output.shape[2]
         w = output.shape[3]
         norm = np.ones((pred.shape[0], 2)) * np.array([h, w]) / 10      # 32 * 2上，每个点的值为1 * 64 /10
-    dists = calc_dists(pred, target, norm)                              # 在heatmap上计算预测值和GT值之间的差距，5 * 32维度
+    dists = calc_dists(pred, target, norm)                              # 在heatmap（64 * 64）上计算预测值和GT值之间的差距，5 * 32维度
 
     acc = np.zeros((len(idx) + 1))
     avg_acc = 0
