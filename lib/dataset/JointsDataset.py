@@ -129,8 +129,8 @@ class JointsDataset(Dataset):
         return len(self.db)
 
     def __getitem__(self, idx):
+        # if not self.is_train:
         db_rec = copy.deepcopy(self.db[idx])  # img，及5个特征点坐标
-
         image_file = db_rec['image'] # img path
         filename = db_rec['filename'] if 'filename' in db_rec else ''
         imgnum = db_rec['imgnum'] if 'imgnum' in db_rec else ''
@@ -145,12 +145,13 @@ class JointsDataset(Dataset):
 
         joints = db_rec['joints']
         joints_raw = copy.deepcopy(db_rec['joints'])
-        joints_raw[:, 0] = joints_raw[:,0] * 250 / data_numpy.shape[1]  # 按照250的尺寸，缩放原始img的label
-        joints_raw[:, 1] = joints_raw[:, 1] * 250 / data_numpy.shape[0]
         joints_vis = db_rec['joints_vis']
 
+        img_resize256 = cv2.resize(data_numpy, (256, 256))
         data_numpy = cv2.resize(data_numpy,(250, 250))
-        #c = np.array([125.0, 125.0]) #db_rec['center']
+
+        joints[:,0] = joints[:,0] * 250 / img_raw.shape[0]  # 将label中的特征点，缩放到250这个级别
+        joints[:,1] = joints[:,1] * 250 / img_raw.shape[1]
 
         # drift
         c = np.array([125.0 + random.uniform(-30.0, 30.0),
@@ -173,11 +174,8 @@ class JointsDataset(Dataset):
                     joints, joints_vis, data_numpy.shape[1], self.flip_pairs)
                 c[0] = data_numpy.shape[1] - c[0] - 1
 
-        trans = get_affine_transform(c, s, r, self.image_size) # img做缩放，平移和翻转，将图片扩充为256, trans比例为rand（以240为例）-256
-
-        cv2.imwrite("before_trans.jpg",data_numpy)
-
-        input = cv2.warpAffine(
+        trans = get_affine_transform(c, s, r, self.image_size) # 定义trans， img做缩放，平移和翻转，将图片扩充为256, trans比例为rand（以240为例）-256
+        input = cv2.warpAffine(                                # 对input做放射变换到256
             data_numpy,
             trans,
             (int(self.image_size[0]), int(self.image_size[1])),
@@ -185,17 +183,16 @@ class JointsDataset(Dataset):
 
         img_256 = copy.deepcopy(input)
 
-        cv2.imwrite("after_trans.jpg", input)
-
         for i in range(self.num_joints):
             if joints_vis[i, 0] > 0.0:
                 joints[i, 0:2] = affine_transform(joints[i, 0:2], trans)  # 对label做放射变换到256
-
 
         input = augmentation(input)  # 图像加噪音
 
         if self.transform:
             input = self.transform(input)  # 对input做transform，为tensor（除以255），再做BN
+        if self.transform:
+            img_resize256_BN = self.transform(img_resize256)  # 对input做transform，为tensor（除以255），再做BN
 
         target, target_weight = self.generate_target(joints, joints_vis) # 对进行仿射变换后的label，生成heatmap
         target = torch.from_numpy(target)
@@ -204,6 +201,8 @@ class JointsDataset(Dataset):
         meta = {
             'image': image_file,  # 文件的名字
             'img_raw':img_raw,    # img的pixel数组
+            'img_resize256':img_resize256,
+            'img_resize256_BN':img_resize256_BN,
             'img_256':img_256,
             'filename': filename,
             'imgnum': imgnum,

@@ -23,6 +23,7 @@ from core.evaluate import accuracy
 from core.evaluate import normalisedError
 from core.inference import get_final_preds
 from utils.transforms import flip_back
+from core.inference import get_max_preds
 from utils.vis import save_debug_images
 import cv2
 
@@ -142,31 +143,18 @@ def train(config, train_loader, model, criterion, optimizer, epoch,
             if cv2.waitKey(1) == 27:
                 exit()
 
-def validate(config, val_loader, val_dataset, model, criterion, output_dir,
-             tb_log_dir, writer_dict=None):
-
-
+def validate(config, val_loader, val_dataset, model, criterion, output_dir,tb_log_dir, writer_dict=None):
     batch_time = AverageMeter()
     losses = AverageMeter()
     acc = AverageMeter()
-
-    # switch to evaluate mode
     model.eval()
-
-    num_samples = len(val_dataset)
-    all_preds = np.zeros((num_samples, config.MODEL.NUM_JOINTS, 3),
-                         dtype=np.float32)
-    all_boxes = np.zeros((num_samples, 6))
-    image_path = []
-    filenames = []
-    imgnums = []
-    idx = 0
     total_error = 0
     with torch.no_grad():
         end = time.time()
         for i, (input, target, target_weight, meta) in enumerate(val_loader):                 # compute output
             output = model(input)
-            batch_error_mean = 0
+            output_256 = model(meta['img_resize256_BN'])
+
             if config.TEST.FLIP_TEST:
                 # this part is ugly, because pytorch has not supported negative index
                 # input_flipped = model(input[:, :, :, ::-1])
@@ -188,111 +176,42 @@ def validate(config, val_loader, val_dataset, model, criterion, output_dir,
             target_weight = target_weight.cuda(non_blocking=True)
 
             loss = criterion(output, target, target_weight)
-
+            # 将heatmap的点，变成特征点上的图。
             num_images = input.size(0)
-            # measure accuracy and record loss
+
             losses.update(loss.item(), num_images)
             _, avg_acc, cnt, pred = accuracy(output.cpu().numpy(),
                                              target.cpu().numpy())
-
             acc.update(avg_acc, cnt)
 
-            # measure elapsed time
             batch_time.update(time.time() - end)
             end = time.time()
 
             c = meta['center'].numpy()  # 因为图像从Dataset里面出来的时候，加了个随机偏移，所以在测试的时候，要把图像偏回去
             s = meta['scale'].numpy()
-            score = meta['score'].numpy()
+
+            # 比较pred和gt的heatmap值
+            pred_heatmap,_ = get_max_preds(output.clone().cpu().numpy())
+            target_heatmap, _ = get_max_preds(target.clone().cpu().numpy())
+
+            pred_heatmap_256, _ = get_max_preds(output_256.clone().cpu().numpy())
+            pred_heatmap_256 *= 4
+
             preds, maxvals = get_final_preds(config, output.clone().cpu().numpy(), c, s)  # 变回到250那个尺度上
 
-            preds[:,:,1] =preds[:,:,1] /200 * meta["img_raw"].shape[2]
-            preds[:, :, 0] = preds[:, :, 0] / 200 * meta["img_raw"].shape[1]
+            gt_landmark = meta['joints'].numpy()
+            imgs_256 = meta["img_256"]
+            # for img_idx in range(imgs_256.shape[0]):
+            #     # vis_face(imgs_256[img_idx], gt_landmark[img_idx], str(img_idx) + ".jpg")
+            #     # vis_face(imgs_256[img_idx], preds[img_idx], str(img_idx) + ".jpg")
+            #     vis_face(meta['img_resize256'][img_idx], pred_heatmap_256[img_idx], str(img_idx) + ".jpg")
 
-
-            gt_landmark = meta['joints_raw'].numpy()
-            imgs = meta["img_256"]
-            for img_idx in range(imgs.shape[0]):
-                vis_face(imgs[img_idx], meta['joints'][img_idx], str(img_idx) + ".jpg")
-
-            # np.savez("pred_gt_landmark.npz", preds, gt_landmark)
-            # print(preds)
-            # print(gt_landmark)
-            # data = np.load("pred_gt_landmark.npz")
-
+            # batch_error_mean = normalisedError(gt_landmark, preds)
             batch_error_mean = normalisedError(gt_landmark, preds)
             total_error += batch_error_mean
             total_mean_error = total_error / (i+1)
-
-            # delta = gt_landmark[:,2,:] - gt_landmark[:,3,:]  # pt0是鼻尖，pt1和pt2是左右眼
-            #
-            # normDist = np.linalg.norm(delta, axis = 1)  # 左右眼距离
-            # landmark_error = np.linalg.norm(preds - gt_landmark, axis=2)  # 5个特征点的平方和开根号
-            # normalised_error = np.sum(landmark_error, axis=1) # 求多个特征点的总误差
-            # normalised_error = normalised_error / normDist  # 计算每个批次的误差
-            #
-            # batch_error_mean = np.sum(normalised_error) / normalised_error.shape[0]
-            #
-            # total_error += batch_error_mean
-            # total_mean_error = total_error / (i+1)
-
             print("batch id:{0}, current batch mean error is:{1}, total mean error is:{2}".format(i, batch_error_mean,total_mean_error))
 
-
-
-
-
-        #     all_preds[idx:idx + num_images, :, 0:2] = preds[:, :, 0:2]
-        #     all_preds[idx:idx + num_images, :, 2:3] = maxvals
-        #     # double check this all_boxes parts
-        #     all_boxes[idx:idx + num_images, 0:2] = c[:, 0:2]
-        #     all_boxes[idx:idx + num_images, 2:4] = s[:, 0:2]
-        #     all_boxes[idx:idx + num_images, 4] = np.prod(s*200, initial=1)
-        #     all_boxes[idx:idx + num_images, 5] = score
-        #     image_path.extend(meta['image'])
-        #     if config.DATASET.DATASET == 'posetrack':
-        #         filenames.extend(meta['filename'])
-        #         imgnums.extend(meta['imgnum'].numpy())
-        #
-        #     idx += num_images
-        #
-        #     if i % config.PRINT_FREQ == 0:
-        #         msg = 'Test: [{0}/{1}]\t' \
-        #               'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t' \
-        #               'Loss {loss.val:.4f} ({loss.avg:.4f})\t' \
-        #               'Accuracy {acc.val:.3f} ({acc.avg:.3f})'.format(
-        #                   i, len(val_loader), batch_time=batch_time,
-        #                   loss=losses, acc=acc)
-        #         logger.info(msg)
-        #
-        #         prefix = '{}_{}'.format(os.path.join(output_dir, 'val'), i)
-        #         save_debug_images(config, input, meta, target, pred*4, output,
-        #                           prefix)
-        #
-        # name_values, perf_indicator = val_dataset.evaluate(
-        #     config, all_preds, output_dir, all_boxes, image_path,
-        #     filenames, imgnums)
-        #
-        # _, full_arch_name = get_model_name(config)
-        # if isinstance(name_values, list):
-        #     for name_value in name_values:
-        #         _print_name_value(name_value, full_arch_name)
-        # else:
-        #     _print_name_value(name_values, full_arch_name)
-
-        # if writer_dict:
-        #     writer = writer_dict['writer']
-        #     global_steps = writer_dict['valid_global_steps']
-        #     writer.add_scalar('valid_loss', losses.avg, global_steps)
-        #     writer.add_scalar('valid_acc', acc.avg, global_steps)
-        #     if isinstance(name_values, list):
-        #         for name_value in name_values:
-        #             writer.add_scalars('valid', dict(name_value), global_steps)
-        #     else:
-        #         writer.add_scalars('valid', dict(name_values), global_steps)
-        #     writer_dict['valid_global_steps'] = global_steps + 1
-
-    # return perf_indicator
 
 
 # markdown format output
