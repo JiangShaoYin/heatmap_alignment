@@ -191,28 +191,31 @@ def validate(config, val_loader, val_dataset, model, criterion, output_dir,tb_lo
             s = meta['scale'].numpy()
 
             # 比较pred和gt的heatmap值
-            pred_heatmap,_ = get_max_preds(output.clone().cpu().numpy())
+            pred_heatmap,_ = get_max_preds(output.clone().cpu().numpy())  # 预测值
             target_heatmap, _ = get_max_preds(target.clone().cpu().numpy())
 
             pred_heatmap_256, _ = get_max_preds(output_256.clone().cpu().numpy())
             pred_heatmap_256 *= 4
+            target_256_64, _ = get_max_preds(meta['target_256_64'].clone().cpu().numpy())
+            target_256_64 *= 4
 
             preds, maxvals = get_final_preds(config, output.clone().cpu().numpy(), c, s)  # 变回到250那个尺度上
 
             gt_landmark = meta['joints'].numpy()
             imgs_256 = meta["img_256"]
-            # for img_idx in range(imgs_256.shape[0]):
-            #     # vis_face(imgs_256[img_idx], gt_landmark[img_idx], str(img_idx) + ".jpg")
-            #     # vis_face(imgs_256[img_idx], preds[img_idx], str(img_idx) + ".jpg")
-            #     vis_face(meta['img_resize256'][img_idx], pred_heatmap_256[img_idx], str(img_idx) + ".jpg")
 
+            # for img_idx in range(imgs_256.shape[0]):
+                # vis_face(imgs_256[img_idx], gt_landmark[img_idx], str(img_idx) + ".jpg")
+                # vis_face(imgs_256[img_idx], preds[img_idx], str(img_idx) + ".jpg")
+                # vis_face(meta['img_resize256'][img_idx], meta['joints_256'][img_idx], str(img_idx) + ".jpg")
+                # vis_face(meta['img_resize256'][img_idx], target_256_64[img_idx], "target_256_64"+str(img_idx) + ".jpg", show = False)
+                # vis_face(meta['img_resize256'][img_idx], pred_heatmap_256[img_idx], "pred_heatmap_256"+ str(img_idx) + ".jpg", show = False)
             # batch_error_mean = normalisedError(gt_landmark, preds)
-            batch_error_mean = normalisedError(gt_landmark, preds)
+            batch_error_mean = normalisedError(target_256_64, pred_heatmap_256)
             total_error += batch_error_mean
             total_mean_error = total_error / (i+1)
+
             print("batch id:{0}, current batch mean error is:{1}, total mean error is:{2}".format(i, batch_error_mean,total_mean_error))
-
-
 
 # markdown format output
 def _print_name_value(name_value, full_arch_name):
@@ -230,16 +233,18 @@ def _print_name_value(name_value, full_arch_name):
         ' '.join(['| {:.3f}'.format(value) for value in values]) +
          ' |'
     )
-def vis_face(im_array, landmark, save_name):
+def vis_face(im_array, landmark, save_name,show):
+    # if show:
+    #     pylab.imshow(im_array)  # im_array是输入图片
     pylab.imshow(im_array)  # im_array是输入图片
-
     if landmark is not None:
-
         for j in range(5):                                # 遍历5个特征点的坐标
             cir1 = Circle(xy=(landmark[j, 0], landmark[j, 1]), radius=2, alpha=0.4, color="red")
             pylab.gca().add_patch(cir1)
 
         pylab.savefig(save_name)
+        # if show:
+        #     pylab.show()
         pylab.show()
 
 class AverageMeter(object):

@@ -129,7 +129,6 @@ class JointsDataset(Dataset):
         return len(self.db)
 
     def __getitem__(self, idx):
-        # if not self.is_train:
         db_rec = copy.deepcopy(self.db[idx])  # img，及5个特征点坐标
         image_file = db_rec['image'] # img path
         filename = db_rec['filename'] if 'filename' in db_rec else ''
@@ -147,7 +146,15 @@ class JointsDataset(Dataset):
         joints_raw = copy.deepcopy(db_rec['joints'])
         joints_vis = db_rec['joints_vis']
 
-        img_resize256 = cv2.resize(data_numpy, (256, 256))
+        img_resize256 = cv2.resize(data_numpy, (256, 256))  # resize成256， 直接写入meta，返回输出
+
+        joints_256 = np.array([[0 for i in range(2)] for j in range(5)])
+        joints_256[:,0] = joints[:,0] * 256 / img_raw.shape[0]
+        joints_256[:,1] = joints[:, 1] * 256 / img_raw.shape[0]
+
+        target_256_64, target_weight = self.generate_target(joints_256, joints_vis)  # 对进行仿射变换后的label，生成heatmap
+
+
         data_numpy = cv2.resize(data_numpy,(250, 250))
 
         joints[:,0] = joints[:,0] * 250 / img_raw.shape[0]  # 将label中的特征点，缩放到250这个级别
@@ -208,6 +215,8 @@ class JointsDataset(Dataset):
             'imgnum': imgnum,
             'joints': joints,
             'joints_raw':joints_raw,  # txt中的label信息
+            'joints_256':joints_256,
+            'target_256_64':target_256_64,
             'joints_vis': joints_vis,
             'center': c,
             'scale': s,

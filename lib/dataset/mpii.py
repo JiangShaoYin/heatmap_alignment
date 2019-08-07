@@ -33,6 +33,7 @@ class MPIIDataset(JointsDataset):
             self.db = self._get_db()
         else:
             self.db = self._get_db_lfw5590()  #
+            # self.db = self._get_db_test()  #
 
         if is_train and cfg.DATASET.SELECT_DATA:
             self.db = self.select_data(self.db)
@@ -40,10 +41,7 @@ class MPIIDataset(JointsDataset):
         logger.info('=> load {} samples'.format(len(self.db)))
 
     def _get_db(self):
-        # create train/val split
         annot_root = "../data/annots/" # 读取根目录
-        #annot_root = "/home/chengchao/tmp/"
-        
         gt_db = []
         annots = []
 
@@ -75,14 +73,13 @@ class MPIIDataset(JointsDataset):
         return gt_db
 
     def _get_db_lfw5590(self):
-        # create train/val split
         annot_root = "../../mtcnn-pytorch/data_set/face_landmark/"  # 读取根目录
-        # annot_root = "/home/chengchao/tmp/"
-        print()
+
         gt_db = []
         annots = []
 
         for dataset in ["1200.txt"]:  # ["0.txt"]:
+
             print(os.path.abspath(".")) # 返回参数的绝对路径（string）
             print(os.path.abspath("../../"))
             f = open(os.path.join(annot_root, dataset), "r")
@@ -114,6 +111,41 @@ class MPIIDataset(JointsDataset):
                 'filename': '',
                 'imgnum': 0,
             })
+
+        return gt_db
+
+    def _get_db_test(self):
+        annot_root = "../data/annots/" # 读取根目录
+        gt_db = []
+        annots = []
+
+        # for dataset in ["celeba.txt", "106data.txt"]:
+        # for dataset in ["106data.txt"]:
+        for dataset in ["celeba.txt"]:
+            f = open(os.path.join(annot_root, dataset), "r")
+            annots.extend(f.readlines())
+
+        for annot in annots:
+            words = annot.strip().split()
+            image_path = words[0]  #os.path.join(root, words[0])
+
+            joints = np.zeros((self.num_joints, 2), dtype=np.float)
+            joints_vis = np.zeros((self.num_joints,  1), dtype=np.float)
+
+            pt_vals = [float(v)*250 for v in words[1:]]
+            for i in range(5):
+                joints[i, :] = float(pt_vals[2*i]), float(pt_vals[2*i+1])
+                joints_vis[:, 0] = 1
+
+            gt_db.append({
+                'image': image_path,
+                'joints': joints,
+                'joints_vis': joints_vis,
+                'filename': '',
+                'imgnum': 0,
+                })
+
+        return gt_db
 
         return gt_db
 
